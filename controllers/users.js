@@ -1,9 +1,10 @@
 const User = require('../models/user');
+const { VALIDATION_ERROR_CODE, NOT_FOUND_ERROR_CODE, DEFAULT_ERROR_CODE } = require('../utils/constants');
 
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(DEFAULT_ERROR_CODE).send({ message: 'На сервере произошла ошибка' }));
 };
 
 const getUserById = (req, res) => {
@@ -11,9 +12,9 @@ const getUserById = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Пользователь по указанному _id не найден' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(DEFAULT_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -25,9 +26,9 @@ const createUser = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
+        res.status(VALIDATION_ERROR_CODE).send({ message: 'Переданы некорректные данные при создании пользователя' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(DEFAULT_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -39,11 +40,11 @@ const updateProfileInfo = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Пользователь по указанному _id не найден' });
       } else if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля' });
+        res.status(VALIDATION_ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении профиля' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(DEFAULT_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -55,11 +56,11 @@ const updateAvatar = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Пользователь по указанному _id не найден' });
       } else if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля' });
+        res.status(VALIDATION_ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении профиля' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(DEFAULT_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };

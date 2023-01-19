@@ -4,6 +4,7 @@
 Бекенд для проекта Место. Реализованы методы работы с пользователями и карточками. Бэкенд использует Node и express. Используется обработка ошибок и валидация запросов. Данные сохраняются в базе данных MongoDB.
 
 * [Ссылка на проект](https://prettypolyana.github.io/express-mesto-gha/)
+* [Ссылка на репозиторий](https://github.com/prettypolyana/express-mesto-gha)
 
 ## Директории
 
@@ -20,5 +21,5 @@
 
 * JavaScript
 * Node
-* express
+* Express
 * MongoDB
