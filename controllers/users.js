@@ -53,6 +53,8 @@ const updateProfileInfo = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(VALIDATION_ERROR_CODE).send({ message: 'Передан некорректный _id пользователя' });
+      } else if (err.name === 'ValidationError') {
+        res.status(VALIDATION_ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении профиля' });
       } else {
         res.status(DEFAULT_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });
       }
