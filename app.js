@@ -25,8 +25,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
-app.get('/test', (req, res) => {
-  res.send('my test');
+app.use((req, res) => {
+  res.status(404).send({ message: 'Адреса не существует' });
 });
 
 app.listen(PORT);
