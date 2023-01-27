@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
+const { CREATED_STATUS_CODE } = require('../utils/constants');
+
 const NotFoundError = require('../errors/not-found-err');
 const ValidationError = require('../errors/validation-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
@@ -47,7 +49,11 @@ const createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.send(user))
+    .then((user) => {
+      const userObject = user.toObject();
+      delete userObject.password;
+      return res.status(CREATED_STATUS_CODE).send(userObject);
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError('Переданы некорректные данные при создании пользователя'));
@@ -129,7 +135,7 @@ const login = (req, res, next) => {
             throw new UnauthorizedError('Необходима авторизация');
           }
           const token = jwt.sign({ _id: user._id }, 'c01f0f02282771cb642873775aff6a58d5bd9c452389f98c07c41e333b70b069', { expiresIn: '7d' });
-          return res.cookie('token', token, { httpOnly: true }).end();
+          return res.cookie('token', token, { httpOnly: true }).send({ token });
         });
     })
     .catch((err) => {
