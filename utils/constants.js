@@ -6,6 +6,8 @@ const NOT_FOUND_ERROR_CODE = 404;
 const ALREADY_EXIST_CODE = 409;
 const DEFAULT_ERROR_CODE = 500;
 
+const URL_REGEX = /https?:\/\/(www\.)?[\d\S]+$/i;
+
 module.exports = {
   CREATED_STATUS_CODE,
   VALIDATION_ERROR_CODE,
@@ -14,4 +16,5 @@ module.exports = {
   NOT_FOUND_ERROR_CODE,
   ALREADY_EXIST_CODE,
   DEFAULT_ERROR_CODE,
+  URL_REGEX,
 };

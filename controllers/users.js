@@ -13,9 +13,7 @@ const AlreadyExistError = require('../errors/already-exist-err');
 const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 const getUserById = (req, res, next) => {
@@ -27,13 +25,7 @@ const getUserById = (req, res, next) => {
         res.send(user);
       }
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new ValidationError('Передан некорректный _id пользователя'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const createUser = (req, res, next) => {
@@ -74,13 +66,7 @@ const getProfileInfo = (req, res, next) => {
         res.send(user);
       }
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new ValidationError('Передан некорректный _id пользователя'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const updateProfileInfo = (req, res, next) => {
@@ -95,9 +81,7 @@ const updateProfileInfo = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new ValidationError('Передан некорректный _id пользователя'));
-      } else if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         next(new ValidationError('Переданы некорректные данные при обновлении профиля'));
       } else {
         next(err);
@@ -127,24 +111,18 @@ const login = (req, res, next) => {
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw new UnauthorizedError('Необходима авторизация');
+        throw new UnauthorizedError('Пользователь с такой парой email - пароль не найден');
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            throw new UnauthorizedError('Необходима авторизация');
+            throw new UnauthorizedError('Пользователь с такой парой email - пароль не найден');
           }
           const token = jwt.sign({ _id: user._id }, 'c01f0f02282771cb642873775aff6a58d5bd9c452389f98c07c41e333b70b069', { expiresIn: '7d' });
           return res.cookie('token', token, { httpOnly: true }).send({ token });
         });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new ValidationError('Передан некорректный email пользователя'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports = {

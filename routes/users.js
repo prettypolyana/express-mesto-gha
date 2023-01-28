@@ -9,22 +9,24 @@ const {
   updateAvatar,
 } = require('../controllers/users');
 
+const { URL_REGEX } = require('../utils/constants');
+
 router.get('/', getUsers);
 router.get('/me', getProfileInfo);
 router.get('/:userId', celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().regex(/^[a-z0-9]{24}$/i),
+    userId: Joi.string().required().max(24).hex(),
   }),
 }), getUserById);
 router.patch('/me', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
   }),
 }), updateProfileInfo);
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().regex(/https?:\/\/(www\.)?[\d\S]+$/i),
+    avatar: Joi.string().required().regex(URL_REGEX),
   }),
 }), updateAvatar);
 
