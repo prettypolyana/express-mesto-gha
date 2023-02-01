@@ -129,7 +129,7 @@ const login = (req, res, next) => {
             throw new UnauthorizedError('Пользователь с такой парой email - пароль не найден');
           }
           const token = jwt.sign({ _id: user._id }, 'c01f0f02282771cb642873775aff6a58d5bd9c452389f98c07c41e333b70b069', { expiresIn: '7d' });
-          return res.cookie('token', token, { httpOnly: true }).end();
+          return res.send({ token });
         });
     })
     .catch(next);
