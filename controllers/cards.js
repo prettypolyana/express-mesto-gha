@@ -36,7 +36,7 @@ const deleteCard = (req, res, next) => {
       } else if (req.user._id !== card.owner.toString()) {
         throw new AccessDeniedError('Можно удалять только свои карточки');
       } else {
-        Card.deleteOne({ _id: card._id })
+        card.remove()
           .then(() => {
             res.send(card);
           })
