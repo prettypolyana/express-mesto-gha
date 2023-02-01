@@ -25,7 +25,13 @@ const getUserById = (req, res, next) => {
         res.send(user);
       }
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new ValidationError('Передан некорректный _id пользователя'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const createUser = (req, res, next) => {
@@ -101,7 +107,11 @@ const updateAvatar = (req, res, next) => {
       }
     })
     .catch((err) => {
-      next(err);
+      if (err.name === 'ValidationError') {
+        next(new ValidationError('Переданы некорректные данные при обновлении аватара'));
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -119,7 +129,7 @@ const login = (req, res, next) => {
             throw new UnauthorizedError('Пользователь с такой парой email - пароль не найден');
           }
           const token = jwt.sign({ _id: user._id }, 'c01f0f02282771cb642873775aff6a58d5bd9c452389f98c07c41e333b70b069', { expiresIn: '7d' });
-          return res.cookie('token', token, { httpOnly: true }).send({ token });
+          return res.cookie('token', token, { httpOnly: true }).end();
         });
     })
     .catch(next);
